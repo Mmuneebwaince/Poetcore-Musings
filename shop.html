@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LunaBelle Shop</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="site-header" aria-label="Site header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand" aria-label="LunaBelle home">LunaBelle</a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="shop.html">Shop</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" role="main">
+    <h1>Shop the collection</h1>
+    <p class="subtitle">Timeless pieces crafted for the modern woman.</p>
+    <section class="product-grid" aria-label="Products">
+      <div class="tilt-wrap tilt-enabled">
+        <div class="card product">
+          <div class="image" aria-label="Product image"></div>
+          <div class="card-content">
+            <h3>Silk Slip Dress</h3>
+            <p class="price">$98.00</p>
+            <button class="btn btn-primary" onclick="addToCart('Silk Slip Dress')">Add to cart</button>
+          </div>
+        </div>
+      </div>
+      <div class="tilt-wrap tilt-enabled">
+        <div class="card product">
+          <div class="image" aria-label="Product image" style="background: linear-gradient(135deg, #ffe9f2 0%, #f0c9e9 100%);"></div>
+          <div class="card-content">
+            <h3>Rib Knit Sweater</h3>
+            <p class="price">$72.00</p>
+            <button class="btn btn-primary" onclick="addToCart('Rib Knit Sweater')">Add to cart</button>
+          </div>
+        </div>
+      </div>
+      <div class="tilt-wrap tilt-enabled">
+        <div class="card product">
+          <div class="image" aria-label="Product image" style="background: linear-gradient(135deg, #e8f0fe 0%, #d6e3ff 100%);"></div>
+          <div class="card-content">
+            <h3>Flowy Midi Skirt</h3>
+            <p class="price">$82.00</p>
+            <button class="btn btn-primary" onclick="addToCart('Flowy Midi Skirt')">Add to cart</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" aria-label="Site footer">
+    <div class="container">
+      <p>&copy; 2026 LunaBelle. All rights reserved.</p>
+    </div>
+  </footer>
+  <div id="toast" class="toast" aria-live="polite" aria-atomic="true" style="opacity:0; pointer-events:none;"> </div>
+  <script src="assets/js/main.js"></script>
+  </body>
+</html>
