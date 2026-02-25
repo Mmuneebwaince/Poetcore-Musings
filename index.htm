@@ -94,8 +94,8 @@
       <nav class="nav" aria-label="Main navigation">
         <a href="#home">Home</a>
         <a href="#shop">Shop</a>
-        <a href="about.html">About</a>
-        <a href="contact.html">Contact</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
       </nav>
     </div>
   </header>
@@ -231,7 +231,7 @@
 
   <div id="toast" class="toast" aria-live="polite" aria-atomic="true" style="opacity:0; display:none;"> </div>
 
-  <script>
+    <script>
     // Simple client-side interactions
     function showToast(message) {
       const toast = document.getElementById('toast');
@@ -301,9 +301,9 @@
     }
     function routeFromHash() {
       const hash = window.location.hash || '#home';
-      // Redirect to separate pages for About/Contact to keep content on separate files
-      if (hash === '#about') { window.location.href = 'about.html'; return; }
-      if (hash === '#contact') { window.location.href = 'contact.html'; return; }
+      // Internal sections within this single-file index
+      if (hash === '#about') { showSection('about'); return; }
+      if (hash === '#contact') { showSection('contact'); return; }
       switch (hash) {
         case '#shop': showSection('shop'); break;
         case '#product-silk-slip-dress': showSection('product-silk-slip-dress'); break;
