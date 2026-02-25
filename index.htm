@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LunaBelle — All-in-One</title>
+  <meta name="description" content="Single-file LunaBelle storefront with dramatic 3D motion." />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #f7f5f6;
+      --text: #1a1a1a;
+      --muted: #6b6b6b;
+      --brand: #e68aa3;
+      --brand-dark: #b85c7a;
+      --card: #ffffff;
+      --shadow: 0 8px 22px rgba(0,0,0,.08);
+      --border: #000;
+    }
+    *{box-sizing:border-box}
+    html, body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Poppins, system-ui, -apple-system, Arial}
+    .container{width: min(1100px, 92%); margin:0 auto}
+    .site-header{position:sticky; top:0; z-index:10; background:#fff; border-bottom:1px solid #eee}
+    .header-inner{display:flex; align-items:center; justify-content:space-between; padding:14px 0}
+    .brand{font-weight:800; font-size:1.25rem; text-decoration:none; color:#333}
+    .nav{gap:16px; display:flex}
+    .nav a{color:#555; text-decoration:none; font-weight:500; font-size:.95rem}
+    .hero{background: linear-gradient(135deg, #ffe6f0 0%, #f7e6f6 60%), #fff; padding:60px 0}
+    .hero-content{text-align:left}
+    .hero h1{font-size: clamp(2rem, 4vw + 1rem, 3.4rem); margin:0 0 12px}
+    .subtitle{color:var(--muted); font-size:1.05rem; margin-bottom:20px}
+    .btn{border:0; padding:12px 18px; border-radius:999px; cursor:pointer; font-weight:700; transition:transform .2s ease, background-color .2s ease; text-decoration:none; display:inline-block}
+    .btn:focus{outline:2px solid #333; outline-offset:2px}
+    .btn-primary{background: linear-gradient(135deg, #ff7aa2, #f36eaf); color:white}
+    .btn-secondary{background:#000; color:white}
+    .section{ padding:40px 0; display:none; }
+    /* 3D tilt wrappers for cards */
+    .tilt-wrap{ perspective:1000px; display:inline-block; }
+    .tilt-enabled > .card{ transform: translateZ(0); transform-style: preserve-3d; transition: transform 0.2s ease; }
+    .tilt-enabled:hover > .card{ transform: rotateX(0deg) rotateY(0deg) translateZ(22px); }
+    /* 3D sign-up card (From Uiverse.io by 0xnihilism) */
+    .card-3d{ width: 100%; max-width: 520px; padding: 24px; background: #fff; border: 8px solid #000; box-shadow: 15px 15px 0 #000; transform: rotate(-2deg); transition: all 0.3s ease; position: relative; overflow:hidden; }
+    .card-3d:active { animation: shake 0.5s ease-in-out; }
+    .banner { position: absolute; top: 3px; right: -95px; background: #000; color: #fff; padding: 15px; width: 350px; text-align: center; transform: rotate(45deg); font-weight: bold; font-size: 18px; letter-spacing: 2px; overflow: hidden; transition: background 0.5s ease; }
+    .banner-text { display: inline-block; transition: opacity 0.5s ease, transform 0.5s ease; width: 100%; position: absolute; left: 13%; top: 50%; transform: translateY(-50%); }
+    .banner:hover .banner-text:first-child { opacity: 0; transform: translateY(-100%); }
+    .banner:hover .banner-text:last-child { opacity: 1; transform: translateY(-40%); }
+    .banner-text:last-child { opacity: 0; transform: translateY(60%); }
+    .banner:hover { background: red; }
+    .card__title { font-size: 24px; font-weight: 700; color: #000; text-transform: uppercase; margin-bottom: 10px; display: block; border-bottom: 2px solid #000; width: 50%; }
+    .card__subtitle { font-size: 16px; line-height: 1.4; color: #333; margin-bottom: 20px; padding-bottom: 10px; }
+    .card__form { display: flex; flex-direction: column; gap: 20px; }
+    .card__form input { padding: 12px; border: 4px solid #000; font-size: 16px; font-family: "Proxima Nova", sans-serif; transition: all 0.3s ease; background-color: #fff; }
+    .card__form input:focus { outline: none; transform: scale(1.05); }
+    .sign-up { border: 4px solid #000; background: #000; color: #fff; padding: 12px; font-size: 18px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: all 0.3s ease; }
+    .sign-up:hover { background: #fff; color: #000; transform: translateY(-5px); box-shadow: 0 5px 0 #000; }
+    .sign-up:active { animation: shake 0.5s ease-in-out; transform: translateY(0); }
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      50% { transform: translateX(6px); }
+      75% { transform: translateX(-6px); }
+      100% { transform: translateX(0); }
+    }
+    @media (max-width: 700px){
+      .hero{padding:40px 0}
+    }
+    /* Simple router sections */
+    .section{ padding:40px 0; }
+    .hidden{ display:none; }
+    /* Respect user preference for reduced motion - dramatically soften 3D on demand */
+    @media (prefers-reduced-motion: reduce) {
+      .tilt-enabled > .card { transform: none !important; }
+      .tilt-enabled:hover > .card { transform: none !important; }
+      .card-3d { transform: none !important; }
+    }
+    .grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:20px }
+    .card{ background:var(--card); border:1px solid #eee; border-radius:12px; overflow:hidden; box-shadow: var(--shadow); padding:0; min-height: 180px }
+    .card .image{ height:140px; background:#ddd; display:flex; align-items:center; justify-content:center; font-weight:600; color:#666; }
+    .card-content{ padding:12px 14px; }
+    .card h3{ margin:0 0 6px; font-size:1.05rem; }
+    .card p{ color:var(--muted); margin:0 0 8px }
+    .product-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:20px }
+    .card.product{ min-height:320px }
+    .product .price{ font-weight:700 }
+    .section-newsletter{ padding:16px 0 40px; }
+    .toast{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#333; color:#fff; padding:10px 14px; border-radius:6px; }
+  </style>
+</head>
+<body>
+  <header class="site-header" aria-label="Site header">
+    <div class="container header-inner">
+      <a href="index.htm" class="brand" aria-label="LunaBelle home">LunaBelle</a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="#home">Home</a>
+        <a href="#shop">Shop</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" role="main" id="app">
+    <section id="home" class="section" aria-label="Home">
+      <section class="hero" aria-label="Hero">
+        <div class="container hero-content" style="padding: 16px 0 0 0;">
+          <h1>Effortless elegance for every woman</h1>
+          <p class="subtitle">Timeless silhouettes, modern fabrics, and a feminine touch for your everyday style.</p>
+          <a href="#shop" class="btn btn-primary">Shop the collection</a>
+        </div>
+      </section>
+      <section class="section" aria-label="Featured collections" style="display:block; padding-top:20px;">
+        <h2>Featured collections</h2>
+        <div class="grid">
+          <div class="tilt-wrap tilt-enabled">
+            <div class="card">
+              <div class="image" aria-label="Dawn Collection image">Dawn</div>
+              <div class="card-content">
+                <h3>Dawn Collection</h3>
+                <p>Soft linens and breezy silhouettes for day-to-night wear.</p>
+                <a href="#product-flowy-midi-skirt" class="btn btn-secondary" style="margin-right:6px;">View</a>
+              </div>
+            </div>
+          </div>
+          <div class="tilt-wrap tilt-enabled">
+            <div class="card">
+              <div class="image" aria-label="Evening Luxe image" style="background: linear-gradient(135deg, #ffd1e6 0%, #d6b1e5 100%);"></div>
+              <div class="card-content">
+                <h3>Evening Luxe</h3>
+                <p>Velvet textures and satin finishes for special occasions.</p>
+                <a href="#product-silk-slip-dress" class="btn btn-secondary" style="margin-right:6px;">View</a>
+              </div>
+            </div>
+          </div>
+          <div class="tilt-wrap tilt-enabled">
+            <div class="card">
+              <div class="image" aria-label="Workwear image" style="background: linear-gradient(135deg, #e3f2fd 0%, #cfe4ff 100%);"></div>
+              <div class="card-content">
+                <h3>Workwear</h3>
+                <p>Polished staples that move from desk to drinks.</p>
+                <a href="#product-rib-knit-sweater" class="btn btn-secondary" style="margin-right:6px;">View</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section id="shop" class="section" aria-label="Shop">
+      <h2>Shop the collection</h2>
+      <p class="subtitle">Timeless pieces crafted for the modern woman.</p>
+      <section class="product-grid" aria-label="Products">
+        <div class="tilt-wrap tilt-enabled">
+          <div class="card product">
+            <div class="image" aria-label="Product image"></div>
+            <div class="card-content">
+              <h3>Silk Slip Dress</h3>
+              <p class="price">$98.00</p>
+              <button class="btn btn-primary" onclick="addToCart('Silk Slip Dress')">Add to cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="tilt-wrap tilt-enabled">
+          <div class="card product">
+            <div class="image" aria-label="Product image" style="background: linear-gradient(135deg, #ffe9f2 0%, #f0c9e9 100%);"></div>
+            <div class="card-content">
+              <h3>Rib Knit Sweater</h3>
+              <p class="price">$72.00</p>
+              <button class="btn btn-primary" onclick="addToCart('Rib Knit Sweater')">Add to cart</button>
+            </div>
+          </div>
+        </div>
+        <div class="tilt-wrap tilt-enabled">
+          <div class="card product">
+            <div class="image" aria-label="Product image" style="background: linear-gradient(135deg, #e8f0fe 0%, #d6e3ff 100%);"></div>
+            <div class="card-content">
+              <h3>Flowy Midi Skirt</h3>
+              <p class="price">$82.00</p>
+              <button class="btn btn-primary" onclick="addToCart('Flowy Midi Skirt')">Add to cart</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section id="product-silk-slip-dress" class="section" aria-label="Product Silk Slip Dress">
+      <div class="card-3d" aria-label="Product Silk Slip Dress card">
+        <h2 class="card__title">Silk Slip Dress</h2>
+        <p class="card__subtitle">Luxurious silk with a fluid drape for evening elegance.</p>
+        <p class="price">$98.00</p>
+        <button class="sign-up btn btn-primary" onclick="location.hash='#shop';">Back to shop</button>
+      </div>
+    </section>
+
+    <section id="product-rib-knit-sweater" class="section" aria-label="Product Rib Knit Sweater">
+      <div class="card-3d" aria-label="Product Rib Knit Sweater card">
+        <h2 class="card__title">Rib Knit Sweater</h2>
+        <p class="card__subtitle">Cozy and polished, perfect for cooler days.</p>
+        <p class="price">$72.00</p>
+        <button class="sign-up btn btn-primary" onclick="location.hash='#shop';">Back to shop</button>
+      </div>
+    </section>
+
+    <section id="product-flowy-midi-skirt" class="section" aria-label="Product Flowy Midi Skirt">
+      <div class="card-3d" aria-label="Product Flowy Midi Skirt card">
+        <h2 class="card__title">Flowy Midi Skirt</h2>
+        <p class="card__subtitle">A graceful midi with movement and ease.</p>
+        <p class="price">$82.00</p>
+        <button class="sign-up btn btn-primary" onclick="location.hash='#shop';">Back to shop</button>
+      </div>
+    </section>
+
+    <section id="section-newsletter" class="section newsletter" aria-label="Newsletter signup">
+      <div class="card-3d" aria-label="Newsletter signup card" style="max-width:520px;margin:0 auto;">
+        <h2 class="card__title">Stay in the loop</h2>
+        <p class="card__subtitle">Join the LunaBelle newsletter for new drops and exclusive offers.</p>
+        <form class="card__form newsletter-form" onsubmit="event.preventDefault(); subscribe();">
+          <input type="email" id="email" placeholder="Enter your email" required />
+          <button type="submit" class="sign-up">Subscribe</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="about" class="section" aria-label="About" style="display:none"></section>
+    <section id="contact" class="section" aria-label="Contact" style="display:none"></section>
+  </main>
+
+  <footer class="site-footer" aria-label="Site footer" style="padding:20px 0; text-align:center; border-top:1px solid #eee;">
+    <div class="container"><p>&copy; 2026 LunaBelle. All rights reserved.</p></div>
+  </footer>
+
+  <div id="toast" class="toast" aria-live="polite" aria-atomic="true" style="opacity:0; display:none;"> </div>
+
+    <script>
+    // Simple client-side interactions
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      if (!toast) return;
+      toast.textContent = message;
+      toast.style.display = 'block';
+      toast.style.opacity = '1';
+      toast.style.pointerEvents = 'auto';
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.display = 'none';
+        toast.style.pointerEvents = 'none';
+      }, 1800);
+    }
+
+    function subscribe() {
+      const email = document.querySelector('#email')?.value;
+      if (email) {
+        showToast('Thanks for subscribing, ' + email + '!');
+        document.querySelector('#email').value = '';
+      } else {
+        showToast('Please enter a valid email.');
+      }
+    }
+
+    function addToCart(item) {
+      showToast(item + ' added to cart');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const toast = document.getElementById('toast');
+        if (toast) { toast.style.opacity = '0'; toast.style.display = 'none'; }
+      }
+    });
+
+    // 3D tilt for cards (dramatic)
+    function enableTilt() {
+      const wrappers = document.querySelectorAll('.tilt-enabled');
+      wrappers.forEach(w => {
+        w.addEventListener('mousemove', (ev) => {
+          const r = w.getBoundingClientRect();
+          const px = (ev.clientX - r.left) / r.width;
+          const py = (ev.clientY - r.top) / r.height;
+          const tiltX = (0.5 - py) * 28; // dramatic tilt
+          const tiltY = (px - 0.5) * 28;
+          const card = w.querySelector('.card');
+          if (card) { card.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`; }
+        });
+        w.addEventListener('mouseleave', () => {
+          const card = w.querySelector('.card');
+          if (card) { card.style.transform = ''; }
+        });
+      });
+    }
+
+    // Simple hash router (single-file navigation)
+    function hideAllSections() {
+      const sections = document.querySelectorAll('.section');
+      sections.forEach(sec => sec.style.display = 'none');
+    }
+    function showSection(id) {
+      hideAllSections();
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'block';
+    }
+    function routeFromHash() {
+      const hash = window.location.hash || '#home';
+      // Internal sections within this single-file index
+      if (hash === '#about') { showSection('about'); return; }
+      if (hash === '#contact') { showSection('contact'); return; }
+      switch (hash) {
+        case '#shop': showSection('shop'); break;
+        case '#product-silk-slip-dress': showSection('product-silk-slip-dress'); break;
+        case '#product-rib-knit-sweater': showSection('product-rib-knit-sweater'); break;
+        case '#product-flowy-midi-skirt': showSection('product-flowy-midi-skirt'); break;
+        case '#home':
+        default:
+          showSection('home');
+          break;
+      }
+    }
+    window.addEventListener('hashchange', routeFromHash);
+    window.addEventListener('load', function(){ enableTilt(); routeFromHash(); });
+    // expose helpers
+    window.addToCart = addToCart;
+    window.subscribe = subscribe;
+  </script>
+</body>
+</html>
